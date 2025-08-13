@@ -8,7 +8,7 @@ Visit [data-table.openstatus.dev](https://data-table.openstatus.dev) to learn mo
 
 To make it not only more accessible for you to use, but also work on PoC/MVP with data-tables, we have started this repository. We will maintain it and add new examples over time.
 
-It currently includes two main concepts:
+It currently includes two main concepts :
 
 - [data-table with simple pagination](https://data-table.openstatus.dev/default) (client-side)
 - [data-table with infinite scroll and click details](https://data-table.openstatus.dev/infinite) (server-side)

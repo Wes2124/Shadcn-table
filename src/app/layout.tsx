@@ -1,16 +1,21 @@
-import type { Metadata } from "next";
-import "@/styles/globals.css";
-import { ThemeProvider } from "@/components/theme/theme-provider";
-import PlausibleProvider from "next-plausible";
-import { ReactQueryProvider } from "@/providers/react-query";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Toaster } from "@/components/ui/sonner";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
+import type React from "react"
+import type { Metadata } from "next"
+import "@/styles/globals.css"
+import { ThemeProvider } from "@/components/theme/theme-provider"
+import PlausibleProvider from "next-plausible"
+import { ReactQueryProvider } from "@/providers/react-query"
+import { NuqsAdapter } from "nuqs/adapters/next/app"
+import { Toaster } from "@/components/ui/sonner"
+import { Inter } from "next/font/google"
 
-const TITLE = "Powerful Data-Table for React | OpenStatus";
-const DESCRIPTION =
-  "Flexible, fast, and easy-to-use filters with tanstack table, shadcn/ui and search params via nuqs.";
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+})
+
+const TITLE = "Powerful Data-Table for React | OpenStatus"
+const DESCRIPTION = "Flexible, fast, and easy-to-use filters with tanstack table, shadcn/ui and search params via nuqs."
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://data-table.openstatus.dev"),
@@ -28,37 +33,25 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
   },
-};
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
-      suppressHydrationWarning
-    >
-      {process.env.NODE_ENV === "development" ||
-      process.env.NEXT_PUBLIC_REACT_SCAN === "true" ? (
+    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+      {process.env.NODE_ENV === "development" || process.env.NEXT_PUBLIC_REACT_SCAN === "true" ? (
         <head>
-          <script
-            src="https://unpkg.com/react-scan/dist/auto.global.js"
-            async
-          />
+          <script src="https://unpkg.com/react-scan/dist/auto.global.js" async />
         </head>
       ) : null}
       <body className="min-h-screen bg-background antialiased">
         <PlausibleProvider domain="data-table.openstatus.dev">
           <ReactQueryProvider>
             <NuqsAdapter>
-              <ThemeProvider
-                attribute="class"
-                defaultTheme="system"
-                enableSystem
-              >
+              <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                 {children}
                 <Toaster richColors />
               </ThemeProvider>
@@ -67,5 +60,5 @@ export default function RootLayout({
         </PlausibleProvider>
       </body>
     </html>
-  );
+  )
 }

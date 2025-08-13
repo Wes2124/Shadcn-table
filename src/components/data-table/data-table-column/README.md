@@ -9,7 +9,7 @@ Components:
 
 Usage Example:
 
-```tsx
+\`\`\`tsx
 "use client";
 
 import { DataTableColumnLevelIndicator } from "@/components/data-table/data-table-column/data-table-column-level-indicator";
@@ -29,4 +29,4 @@ export const columns: ColumnDef<ColumnSchema>[] = [
     },
   },
 ];
-```
+\`\`\`

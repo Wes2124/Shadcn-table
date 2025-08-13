@@ -27,7 +27,7 @@ The `columns.tsx` file is our known source of truth for the columns. If you are 
 
 We extend the meta types mainly for _styling_ and _filter functions_. That way, we can avoid changing the data-table components itself.
 
-```tsx
+\`\`\`tsx
 import "@tanstack/react-table";
 
 declare module "@tanstack/react-table" {
@@ -68,7 +68,7 @@ declare module "@tanstack/react-table" {
     filterFns?: Record<string, FilterFn<TData>>;
   }
 }
-```
+\`\`\`
 
 ### Table Rows
 
@@ -76,7 +76,7 @@ The more data you have, the more you need to think about how to render the rows,
 
 We currently memoize with a custom deps function to avoid re-rendering the rows when the data is the same.
 
-```tsx
+\`\`\`tsx
 const MemoizedRow = React.memo(
   ({ row, selected }: { row: Row<unknown>; selected: boolean }) => {
     useQueryState("live", searchParamsParser.live);
@@ -84,7 +84,7 @@ const MemoizedRow = React.memo(
   },
   (prev, next) => prev.row.id === next.row.id && prev.selected === next.selected
 ) as typeof Row;
-```
+\`\`\`
 
 The row re-renders only if the `id` or `selected` state of the row changes, and with the `useQueryState` hook, we force a re-render when the `live` param changes (making the `getRowClassName` prop being called to set an opacity to the row).
 
@@ -111,7 +111,7 @@ The _input_, _checkbox_, _slider_ and _timerange_ types are currently supported.
 
 All types extend the `Base` type which defines the following properties:
 
-```ts
+\`\`\`ts
 export type Base<TData> = {
   /**
    * The label of the filter field.
@@ -130,16 +130,16 @@ export type Base<TData> = {
    */
   commandDisabled?: boolean;
 };
-```
+\`\`\`
 
 To support the cmdk input, we need to define the `options` property for all types.
 
-```ts
+\`\`\`ts
 export type Option = {
   label: string;
   value: string | boolean | number | undefined;
 };
-```
+\`\`\`
 
 #### Input
 
@@ -147,12 +147,12 @@ For the `input` type, there is nothing to define.
 
 Within the Controls sidebar, it will be rendered as a simple text input field. The cmdk input will list all the defined `options` once the value is selected.
 
-```ts
+\`\`\`ts
 export type Input = {
   type: "input";
   options?: Option[];
 };
-```
+\`\`\`
 
 **Limitations**: Spaces cannot be used in the input value as they get interpreted as a separator in the cmdk input (and vice versa). An issue [#27](https://github.com/openstatusHQ/data-table-filters/issues/27) is open to tackle this.
 
@@ -160,13 +160,13 @@ export type Input = {
 
 The `checkbox` type will be rendered the options as list of checkboxes in the Controls sidebar. If there are more than 5 options, a search input will be included on top of the list to filter the options. The cmdk input will list all the defined `options` once the value is selected. You can also define a custom component to be rendered for each option.
 
-```ts
+\`\`\`ts
 export type Checkbox = {
   type: "checkbox";
   component?: (props: Option) => JSX.Element | null;
   options?: Option[];
 };
-```
+\`\`\`
 
 > Currently, only the `checkbox` type has a `component` prop. This is used to render a custom checkbox component.
 
@@ -174,14 +174,14 @@ export type Checkbox = {
 
 The `slider` type will be rendered as a slider in the Controls sidebar and have a min and max value input field. The cmdk input will list all the defined `options` once the value is selected.
 
-```ts
+\`\`\`ts
 export type Slider = {
   type: "slider";
   min: number;
   max: number;
   options?: Option[];
 };
-```
+\`\`\`
 
 #### Timerange
 
@@ -189,7 +189,7 @@ The `timerange` type will be rendered as a timerange input field in the Controls
 
 A `DatePreset` can be defined to preset the timerange values. It allows you easily select a range of dates (e.g. last 7 days, last 30 days, last 3 months, last year, etc.).
 
-```ts
+\`\`\`ts
 export type DatePreset = {
   label: string;
   from: Date;
@@ -202,7 +202,7 @@ export type Timerange = {
   options?: Option[]; // required for TS
   presets?: DatePreset[];
 };
-```
+\`\`\`
 
 ### Search Params
 
@@ -227,7 +227,7 @@ We allow you to override the default behavior by providing a custom component.
 
 When loading the sheet and if the data is not available yet, we will show a skeleton component.
 
-```ts
+\`\`\`ts
 export type SheetField<TData, TMeta = Record<string, unknown>> = {
   /**
    * The id of the field - same as the column `id`
@@ -266,7 +266,7 @@ export type SheetField<TData, TMeta = Record<string, unknown>> = {
    */
   skeletonClassName?: string;
 };
-```
+\`\`\`
 
 ## API
 
@@ -279,7 +279,7 @@ It will be up to you to implement the actual API endpoint and query the data fro
 
 You API has to return the following data:
 
-```ts
+\`\`\`ts
 export async function GET(req: Request) {
     // ....
     return Response.json({ data, meta } satisfies {
@@ -289,7 +289,7 @@ export async function GET(req: Request) {
         prevCursor: number | null, // timestamp of the first item in the data array - used for live mode
     })
 }
-```
+\`\`\`
 
 We initially started with `size` and `start`, making `size*start` the offset but it has some drawbacks when it comes to live mode. Instead, we use the `cursor` to mark a timestamp and the `direction` to determine the direction of the pagination - `"prev"` for live mode or `"next"` for load more. If you don't need live mode, you can ignore the `prevCursor` and `fetchPreviousPage` (including the `LiveButton` component).
 
@@ -297,7 +297,7 @@ To parse the response, we use [`superjson`](https://github.com/flightcontrolhq/s
 
 The `meta` object allows us to return additional data that is not part of the `data` array. That can be data for the chart like `chartData`, or statistics to be used in the `Sheet` component like `currentPercentiles`.
 
-```ts
+\`\`\`ts
 export type InfiniteQueryMeta<TMeta = Record<string, unknown>> = {
   /**
    * The total number of rows in the database after filtering the timerange
@@ -332,7 +332,7 @@ type FacetMetadataSchema = {
 type LogsMeta = {
   currentPercentiles: Record<Percentile, number>;
 };
-```
+\`\`\`
 
 ## More
 
@@ -340,7 +340,7 @@ type LogsMeta = {
 
 The timeline chart helps you to visualize the data over time. It utilizes the shadcn component (checkout out the [docs](https://ui.shadcn.com/docs/components/chart)) and renders the bars based on the the amount of data items you defined.
 
-```ts
+\`\`\`ts
 type BaseChartSchema = {
     timestamp: number;
     [key: string]: number; // expects "success", "warning", "error" as keys
@@ -353,7 +353,7 @@ interface TimelineChartProps<TChart extends BaseChartSchema> = {
     data: TChart[];
     // ...
 }
-```
+\`\`\`
 
 As default, the data keys are coming from the `level` field that takes "**success**", "**warning**", "**error**" as values.
 
@@ -377,8 +377,8 @@ For tanstack query, we use the `ReactQueryDevtools` to see the queries and mutat
 
 Tanstack table debug logs can be enabled by setting the `NEXT_PUBLIC_TABLE_DEBUG` environment variable to `true`.
 
-```
+\`\`\`
 # .env.local
 NEXT_PUBLIC_REACT_SCAN=true
 NEXT_PUBLIC_TABLE_DEBUG=true
-```
+\`\`\`

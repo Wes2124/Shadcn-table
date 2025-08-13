@@ -6,7 +6,7 @@ While TanStack provides excellent [documentation on Infinite Queries](https://ta
 
 Infinite queries work with "pages" of data. Each time you load new data, a new "page" is either appended or prepended to the `data.pages` array. To get a flat list of all data in the correct order, you simply use `flatMap`:
 
-```ts
+\`\`\`ts
 const { data, fetchNextPage, fetchPreviousPage } =
   useInfiniteQuery(dataOptions);
 
@@ -14,7 +14,7 @@ const flatData = React.useMemo(
   () => data?.pages?.flatMap((page) => page.data ?? []) ?? [],
   [data?.pages],
 );
-```
+\`\`\`
 
 [!scribble]
 
@@ -27,7 +27,7 @@ Each query requires two key parameters:
 
 In our implementation, the `cursor` is a timestamp representing the last checked date:
 
-```ts
+\`\`\`ts
 const dataOptions = {
   queryKey: "data-table",
   queryFn: async ({ pageParam }) => {
@@ -51,7 +51,7 @@ const dataOptions = {
     return { cursor: lastPage.nextCursor, direction: "next" };
   },
 };
-```
+\`\`\`
 
 The `getPreviousPageParam` and `getNextPageParam` functions receive the first and last pages respectively as their first parameter. This allows us to access the `prevCursor` and `nextCursor` values to track our position when loading more items or checking for updates in live mode.
 
@@ -59,19 +59,19 @@ TanStack provides helpful states like `isFetchingNextPage` and `isFetchingPrevio
 
 Your API endpoint should return at minimum:
 
-```ts
+\`\`\`ts
 type ReturnType<T> = {
   data: T[];
   nextCursor?: number | null;
   prevCursor?: number | null;
 };
-```
+\`\`\`
 
 When fetching older pages ("next" direction), we set a `LIMIT` (e.g., 40 items). However, when fetching newer data ("prev" direction), we return all data between the `prevCursor` and `Date.now()`.
 
 Example API implementation:
 
-```ts
+\`\`\`ts
 export async function GET(req: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const cursor = searchParams.get("cursor");
@@ -100,7 +100,7 @@ export async function GET(req: NextRequest) {
     return Response.json(res);
   }
 }
-```
+\`\`\`
 
 Key points:
 
@@ -113,14 +113,14 @@ Key points:
 
 While it might be tempting to use `OFFSET` for pagination (without having live mode active), this approach can cause problems when data is frequently prepended:
 
-```ts
+\`\`\`ts
 const data = await sql`
   SELECT * FROM table 
   ORDER BY timestamp DESC 
   LIMIT ${limit} 
   OFFSET ${offset}
 `;
-```
+\`\`\`
 
 [scribble]
 
@@ -130,7 +130,7 @@ When new items are prepended, they shift the offset values, potentially causing 
 
 While TanStack Query provides a `refetchInterval` option, it would refetch all pages, growing increasingly expensive as more pages are loaded. Instead, we implement a custom refresh mechanism for fetching only new data:
 
-```tsx
+\`\`\`tsx
 const REFRESH_INTERVAL = 5_000; // 5 seconds
 
 React.useEffect(() => {
@@ -153,7 +153,7 @@ React.useEffect(() => {
     clearTimeout(timeoutId);
   };
 }, [isLive, fetchPreviousPage]);
-```
+\`\`\`
 
 We use `setTimeout` with recursion rather than `setInterval` to ensure each refresh only starts after the previous one completes. This prevents multiple simultaneous fetches when network latency exceeds the refresh interval and is a better UX.
 

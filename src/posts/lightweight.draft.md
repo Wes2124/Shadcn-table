@@ -10,7 +10,7 @@ Now, we’re excited to announce support for an extensive dashboard. If you're a
 
 Here's a snapshot of the current **Folder Structure**:
 
-```
+\`\`\`
 /src/app/light
 ├── api
 │   └── route.tsx
@@ -21,7 +21,7 @@ Here's a snapshot of the current **Folder Structure**:
 ├── page.tsx
 ├── query-options.ts
 └── search-params.ts
-```
+\`\`\`
 
 We explore most of these files in the [Guide](https://logs.run/guide).
 
